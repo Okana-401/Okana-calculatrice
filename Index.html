@@ -1,0 +1,200 @@
+<!DOCTYPE html><html lang="mg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculatrice Miavaka</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg-light: #ffffff;
+      --color-text-light: #28a745;
+      --color-result-light: #dc3545;
+      --color-bg-dark: #121212;
+      --color-text-dark: #ff8c00;
+      --color-btn-dark: #333;
+      --color-equal: #ff8c00;
+    }body {
+  font-family: 'Orbitron', sans-serif;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  transition: background-color 0.3s;
+}
+
+.calculator {
+  background-color: var(--color-bg-light);
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  padding: 20px;
+  width: 320px;
+  transition: background-color 0.3s;
+}
+
+.screen {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: var(--color-text-light);
+  text-align: right;
+  padding: 10px;
+  height: 50px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ccc;
+  position: relative;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background-color: currentColor;
+  animation: blink 1s step-end infinite;
+  vertical-align: bottom;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+button {
+  padding: 20px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+.btn-operator { background: #343a40; color: white; }
+.btn-equal { background: var(--color-equal); color: white; }
+.btn-clear { background: #ced4da; color: black; }
+.btn-mode { background: #888; color: white; }
+
+.fade-out {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+}
+
+.dark-mode {
+  background-color: var(--color-bg-dark);
+}
+
+.dark-mode .screen {
+  color: var(--color-text-dark);
+}
+
+.dark-mode .btn-operator,
+.dark-mode .btn-clear,
+.dark-mode .btn-mode {
+  background: var(--color-btn-dark);
+  color: white;
+}
+
+  </style>
+</head>
+<body>
+  <div class="calculator" id="calculator">
+    <div class="screen" id="screen">0<span class="cursor"></span></div>
+    <div class="buttons">
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
+      <button class="btn-operator" onclick="press('/')">÷</button><button onclick="press('4')">4</button>
+  <button onclick="press('5')">5</button>
+  <button onclick="press('6')">6</button>
+  <button class="btn-operator" onclick="press('*')">×</button>
+
+  <button onclick="press('1')">1</button>
+  <button onclick="press('2')">2</button>
+  <button onclick="press('3')">3</button>
+  <button class="btn-operator" onclick="press('-')">−</button>
+
+  <button onclick="press('0')">0</button>
+  <button onclick="press('.')">.</button>
+  <button class="btn-equal" onclick="calculate()">=</button>
+  <button class="btn-operator" onclick="press('+')">+</button>
+
+  <button class="btn-clear" onclick="clearScreen()">C</button>
+  <button class="btn-clear" onclick="backspace()">⌫</button>
+  <button class="btn-mode" onclick="toggleMode()">☀/🌙</button>
+  <button class="btn-mode" onclick="showHistory()">H</button>
+</div>
+
+  </div>  <script>
+    let expression = '';
+    let isDark = false;
+
+    const screen = document.getElementById('screen');
+    const calculator = document.getElementById('calculator');
+
+    function press(value) {
+      if (screen.textContent === '0') expression = '';
+      expression += value;
+      updateScreen();
+    }
+
+    function updateScreen() {
+      screen.innerHTML = expression + '<span class="cursor"></span>';
+    }
+
+    function calculate() {
+      try {
+        expression = eval(expression).toString();
+        screen.innerHTML = `<span style="color: ${isDark ? '#ff8c00' : '#dc3545'}">` + expression + '</span><span class="cursor"></span>';
+      } catch {
+        screen.innerHTML = '<span style="color:red">Error</span><span class="cursor"></span>';
+        expression = '';
+      }
+    }
+
+    function clearScreen() {
+      expression = '';
+      updateScreen();
+    }
+
+    function backspace() {
+      if (expression.length > 0) {
+        screen.classList.add('fade-out');
+        setTimeout(() => {
+          expression = expression.slice(0, -1);
+          updateScreen();
+          screen.classList.remove('fade-out');
+        }, 300);
+      }
+    }
+
+    function toggleMode() {
+      isDark = !isDark;
+      document.body.classList.toggle('dark-mode', isDark);
+      calculator.classList.toggle('dark-mode', isDark);
+      updateScreen();
+    }
+
+    function showHistory() {
+      alert('History feature coming soon!');
+    }
+  </script></body>
+</html>
